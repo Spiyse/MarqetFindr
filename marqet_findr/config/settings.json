@@ -1,0 +1,19 @@
+{
+  "base_url": "https://www.ss.com/",
+  "category": "electronics/computers/pc/",
+  "scraping": {
+    "timeout": 10,
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    },
+    "retry_attempts": 3
+  },
+  "parsing": {
+    "table_index": 1
+  },
+  "output": {
+    "format": "console",
+    "save_to_file": false,
+    "file_path": "data/listings.json"
+  }
+}

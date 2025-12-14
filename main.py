@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+from marqet_findr.core.utils import extract_text
 
 url = 'https://www.ss.com/lv/electronics/computers/pc/'
 
@@ -18,15 +19,30 @@ listing_table_rows = listing_table.find_all('tr')
 
 
 listing_names = []
-listing_num = 1
+listing_prices = []
+listing_regions = []
+
 for listing_table_row in listing_table_rows:
     # d1 is the listings title or name or whatever
-    listing_num += 1
-    title_div = listing_table_row.find('div', class_='d1')
-    if title_div:
-        title_link = title_div.find('a')
-        title_text = (title_link.get_text(strip=True) if title_link else title_div.get_text(strip=True))
-        if title_text:
-            listing_names.append(title_text)
+    # ampot is the listings price
+    # ads_region is the listings region/location
 
+    title_div = listing_table_row.find('div', class_='d1')
+    price_td = listing_table_row.select_one('td:nth-of-type(7)')
+    region_div = listing_table_row.find('div', class_='ads_region')
+
+    if price_text := extract_text(price_td, 'a', 'ampot'):
+        listing_prices.append(price_text)
+
+    if title_text := extract_text(title_div, 'a'):
+        listing_names.append(title_text)
+
+    if region_text := extract_text(region_div):
+        listing_regions.append(region_text)
+
+    
+
+print(listing_names[1])
+print(listing_prices[1])
+print(listing_regions[1])
 

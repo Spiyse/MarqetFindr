@@ -1,9 +1,10 @@
 # MarqetFindr
 
 ## A python marketplace scraper
-rn only ss.com scraper.
+was bored so decided to make a marketplace scraper.
+right now only a ss.com scraper (will maybe also have other marketplace scrapers in the future).
 
-# Made using
+# Rn using
 | :> | version |
 | :--- | :--- |
 | Python | 3.12.10 |

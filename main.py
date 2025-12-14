@@ -1,48 +1,30 @@
-from bs4 import BeautifulSoup
-import requests
-from marqet_findr.core.utils import extract_text
+from marqet_findr.core import fetch_page, parse_listings
+from marqet_findr.config import load_config
 
-url = 'https://www.ss.com/lv/electronics/computers/pc/'
+# Load configuration
+config = load_config()
 
-page = requests.get(url)
-page.raise_for_status()
+# Build URL from config
+base_url = config.get('base_url')
+category = config.get('category') # For now the default catagory is pc's
+url = base_url + category
 
-soup = BeautifulSoup(page.text, features='html.parser')
+# Fetch the page
+soup = fetch_page(url, config)
 
-tables = soup.find_all('table')
-if len(tables) < 2:
-    print("No listings table found")
+
+# Parse listings
+listings = parse_listings(soup, config)
+
+if not listings:
+    print("No listings found")
     exit(1)
 
-listing_table = tables[1]
-listing_table_rows = listing_table.find_all('tr')
-
-
-listing_names = []
-listing_prices = []
-listing_regions = []
-
-for listing_table_row in listing_table_rows:
-    # d1 is the listings title or name or whatever
-    # ampot is the listings price
-    # ads_region is the listings region/location
-
-    title_div = listing_table_row.find('div', class_='d1')
-    price_td = listing_table_row.select_one('td:nth-of-type(7)')
-    region_div = listing_table_row.find('div', class_='ads_region')
-
-    if price_text := extract_text(price_td, 'a', 'ampot'):
-        listing_prices.append(price_text)
-
-    if title_text := extract_text(title_div, 'a'):
-        listing_names.append(title_text)
-
-    if region_text := extract_text(region_div):
-        listing_regions.append(region_text)
-
-    
-
-print(listing_names[1])
-print(listing_prices[1])
-print(listing_regions[1])
+# Display a sample listing for now in the terminal so i can see if the listing info is right
+if len(listings) > 1:
+    sample = listings[1]
+    print(f"Name: {sample.get('name')}")
+    print(f"Price: {sample.get('price')}")
+    print(f"Region: {sample.get('region')}")
+    print(f"Image: {sample.get('image')}")
 

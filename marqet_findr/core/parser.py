@@ -1,6 +1,5 @@
 from marqet_findr.core.utils import extract_text
-
-
+ 
 def parse_listings(soup, config=None):
     if config is None:
         config = {}
@@ -22,12 +21,16 @@ def parse_listings(soup, config=None):
         # ampot is the listings price (always last td)
         # ads_region is the listings region/location
         # foto_list is the listings image
-
-        title_div = listing_table_row.find('div', class_='d1')
         all_tds = listing_table_row.find_all('td')
-        price_td = all_tds[-1] if all_tds else None  # Get last td so i can get price
+        header_tds = listing_table_row.find('td')
+
+
+        price_td = all_tds[-1] if all_tds else None  # Get last td so i can get price from the listing
+        
+        title_div = listing_table_row.find('div', class_='d1')
         region_div = listing_table_row.find('div', class_='ads_region')
         image_td = listing_table_row.select_one('td:nth-of-type(2)')
+        
 
         listing = {}
 
@@ -43,6 +46,10 @@ def parse_listings(soup, config=None):
         if image_td and (img_tag := image_td.find('img', class_='foto_list')):
             if src := img_tag.get('src'):
                 listing['image'] = src
+                
+        if title_div and (a_tag := title_div.find('a', class_='am')):
+            if href := a_tag.get('href'):
+                listing['link'] = href
 
         # Only append if the listing has at least a name
         if listing.get('name'):
